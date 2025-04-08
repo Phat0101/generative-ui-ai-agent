@@ -13,15 +13,18 @@ export const weatherTool = createTool({
 });
 
 export const stockPriceTool = createTool({
-  description: 'Display the stock price for a stock symbol',
+  description: 'Display the stock price for a stock symbol for a given range, If no range is provided, the default is 1y',
   parameters: z.object({
     symbol: z.string().describe('The company stock symbol to get the stock price for'),
+    range: z.string().describe('The range of the stock price to get: 1 year is 1y, 5 years is 5y, 1 month is 1mo, 3 months is 3mo, 6 months is 6mo, 1 day is 1d, max is max, year to date is ytd. Default is 1y if not specified.'),
   }),
-  execute: async function ({ symbol }) {
+  execute: async function ({ symbol, range }) {
     console.log("Fetching stock price for symbol:", symbol);
     try {
-      const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=1y&interval=1d`,);
+      if (range === '1d') {range = '1y'}
+      const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=${range}&interval=1d`,);
       const data = await response.json();
+      console.log("Stock price data:", data.chart.result[0]);
       const timestamp = data.chart.result[0].timestamp;
       const prices = data.chart.result[0].indicators.quote[0].close
       const stockPrice = prices[prices.length - 1];

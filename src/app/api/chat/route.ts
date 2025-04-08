@@ -17,6 +17,7 @@ export async function POST(request: Request) {
       messages,
       maxSteps: 5,
       tools,
+      toolChoice: 'auto'
     });
     return result.toDataStreamResponse();
   } catch (error) {

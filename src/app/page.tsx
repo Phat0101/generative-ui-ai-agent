@@ -16,7 +16,7 @@ export default function Page() {
         <h1 className="text-2xl font-bold">Generative UI Chat</h1>
         <ThemeToggle />
       </div>
-      <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 mb-14" >
         <div className="flex-1 overflow-y-auto p-4 space-y-4 container mx-auto max-w-3xl">
           {messages.map(message => (
             <div
@@ -92,7 +92,7 @@ export default function Page() {
           ))}
         </div>
 
-        <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 fixed bottom-0 w-full">
           <form onSubmit={handleSubmit} className="flex items-center space-x-2 container mx-auto max-w-3xl">
             <input
               type="text"

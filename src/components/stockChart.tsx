@@ -62,32 +62,34 @@ export const StockChart = ({ stockPrice, prices, timestamp, symbol }: StockChart
 
       {/* Chart */}
       {chartData.length > 1 ? (
-        <div className="h-48 md:h-64 w-full">
+        <div className="h-48 md:h-64 w-full min-w-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 5, right: 5, left: -25, bottom: 5 }}> {/* Adjust left margin for Y-axis */}
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" /> 
+              <CartesianGrid strokeDasharray="3 3" className="stroke-gray-300 dark:stroke-gray-600" /> 
               <XAxis 
                 dataKey="date" 
                 fontSize={10}
-                tick={{ fill: 'hsl(var(--muted-foreground))' }} 
-                axisLine={{ stroke: 'hsl(var(--border))' }}
-                tickLine={{ stroke: 'hsl(var(--border))' }}
+                tick={{ className: 'fill-gray-500 dark:fill-gray-400' }} 
+                axisLine={{ className: 'stroke-gray-400 dark:stroke-gray-500' }}
+                tickLine={{ className: 'stroke-gray-400 dark:stroke-gray-500' }}
               />
               <YAxis 
                 domain={yDomain} 
                 fontSize={10}
                 tickFormatter={(value) => `$${value.toFixed(0)}`} 
-                tick={{ fill: 'hsl(var(--muted-foreground))' }} 
-                axisLine={{ stroke: 'hsl(var(--border))' }}
-                tickLine={{ stroke: 'hsl(var(--border))' }}
+                tick={{ className: 'fill-gray-500 dark:fill-gray-400' }} 
+                axisLine={{ className: 'stroke-gray-400 dark:stroke-gray-500' }}
+                tickLine={{ className: 'stroke-gray-400 dark:stroke-gray-500' }}
               />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: 'hsl(var(--background))', 
-                  borderColor: 'hsl(var(--border))', 
-                  borderRadius: 'var(--radius)', // Use CSS variable if available
-                  color: 'hsl(var(--foreground))' // Text color for tooltip
-                }} 
+                  backgroundColor: '#ffffff', // Use actual colors or variables
+                  borderColor: '#e5e7eb',
+                  borderRadius: '0.25rem',
+                  color: '#111827' 
+                }}
+                wrapperClassName="dark:!bg-gray-800 dark:!border-gray-600"
+                labelStyle={{ color: '#374151' }} // Darker label in light mode
                 itemStyle={{ color: '#10b981' }} // Green line color
                 formatter={(value: number) => [`$${value.toFixed(2)}`, 'Price']} 
               />
