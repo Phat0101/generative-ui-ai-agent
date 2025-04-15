@@ -3,6 +3,7 @@
 import { useChat } from '@ai-sdk/react';
 import { Weather } from '@/components/weather';
 import { StockChart } from '@/components/stockChart';
+import { StockFinancials } from '@/components/stockFinancials';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Suspense } from 'react';
 
@@ -71,6 +72,25 @@ export default function Page() {
                           return (
                             <div key={index} className="mt-2 text-xs text-gray-500 dark:text-gray-400 italic">
                               Loading stock price...
+                            </div>
+                          );
+                        }
+                      }
+
+                      if (toolName === 'displayStockFinancials') {
+                        if (state === 'result') {
+                          const { result } = toolInvocation;
+                          if (result) {
+                            return (
+                              <div key={index} className="mt-2 p-2 border-t border-gray-300/50 dark:border-gray-700/50">
+                                <StockFinancials {...result} />
+                              </div>
+                            );
+                          }
+                        } else {
+                          return (
+                            <div key={index} className="mt-2 text-xs text-gray-500 dark:text-gray-400 italic">
+                              Loading stock financial data...
                             </div>
                           );
                         }
