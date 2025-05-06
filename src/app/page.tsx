@@ -26,8 +26,8 @@ export default function Page() {
             >
               <div
                 className={`max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl p-3 rounded-lg shadow ${message.role === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'
                   }`}
               >
                 <div className="mb-2 prose prose-sm dark:prose-invert max-w-none">
@@ -40,41 +40,62 @@ export default function Page() {
                       const { toolInvocation } = part;
                       const { toolName, state } = toolInvocation;
 
-                      if (toolName === 'displayWeather') {
-                        if (state === 'result') {
-                          const { result } = toolInvocation;
-                          return (
-                            <div key={index} className="mt-2 p-2 border-t border-gray-300/50 dark:border-gray-700/50">
-                              <Weather {...result} />
-                            </div>
-                          );
-                        } else {
-                          return (
-                            <div key={index} className="mt-2 text-xs text-gray-500 dark:text-gray-400 italic">
-                              Loading weather...
-                            </div>
-                          );
-                        }
-                      }
+                      const renderToolCallIndicator = (toolDisplayName: string, isLoading: boolean) => (
+                        <div key={`${index}-indicator`} className="flex items-center space-x-2 mt-2 text-xs text-gray-600 dark:text-gray-400 p-2 rounded bg-gray-100 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600/50">
+                          <span className="text-sm">⚙️</span>
+                          <span>
+                            {isLoading
+                              ? `Calling ${toolDisplayName}...`
+                              : `Called ${toolDisplayName}`}
+                          </span>
+                        </div>
+                      );
 
-                      if (toolName === 'displayStockPrice') {
+                      let toolDisplayName = toolName;
+                      let resultComponent = null;
+                      const isLoading = state !== 'result';
+
+                      //  displayWeatherSF
+                      if (toolName === 'displayWeatherSF') {
+                        toolDisplayName = 'San Francisco Weather tool';
                         if (state === 'result') {
-                          const { result } = toolInvocation;
-                          if (result) {
-                            return (
-                              <div key={index} className="mt-2 p-2 border-t border-gray-300/50 dark:border-gray-700/50">
-                                <StockChart {...result} />
+                          const toolResult = toolInvocation.result;
+                          if (toolResult) {
+                            resultComponent = (
+                              <div key={`${index}-result`} className="mt-2">
+                                <Weather {...toolResult} />
                               </div>
                             );
                           }
-                        } else {
-                          return (
-                            <div key={index} className="mt-2 text-xs text-gray-500 dark:text-gray-400 italic">
-                              Loading stock price...
-                            </div>
-                          );
                         }
                       }
+
+                      // displayStockPrice
+                      if (toolName === 'displayStockPrice') {
+                        toolDisplayName = `stock price tool`;
+                        if (state === 'result') {
+                          const toolResult = toolInvocation.result;
+                          if (toolResult) {
+                            resultComponent = (
+                              <div key={`${index}-result`} className="mt-2">
+                                <StockChart {...toolResult} />
+                              </div>
+                            );
+                          }
+                        }
+                      }
+
+                      // MCP weather tool
+                      if (toolName === 'get_weather') {
+                        toolDisplayName = `mcp weather tool`;
+                      }
+
+                      return (
+                        <div key={index}>
+                          {resultComponent}
+                          {renderToolCallIndicator(toolDisplayName, isLoading)}
+                        </div>
+                      );
                     }
                     if (part.type === "source") {
                       const { source } = part;
