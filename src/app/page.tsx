@@ -149,8 +149,8 @@ export default function Page() {
 
                       return (
                         <div key={index}>
-                          {resultComponent}
                           {renderToolCallIndicator(toolDisplayName, isLoading)}
+                          {resultComponent}
                         </div>
                       );
                     }
