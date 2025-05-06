@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const mcpClient = await createMCPClient({
       transport: {
         type: 'sse',
-        url: 'http://localhost:8051/sse',
+        url: process.env.MCP_SERVER_URL || 'http://localhost:8051/sse',
       },
     });
     const mcpTools = await mcpClient.tools();
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 
     const result = await streamText({
       model: google('gemini-2.5-flash-preview-04-17'),
-      system: 'You are a friendly assistant!',
+      system: 'You are a friendly assistant! Please format your responses in Markdown.',
       messages,
       maxSteps: 5,
       tools: allTools,

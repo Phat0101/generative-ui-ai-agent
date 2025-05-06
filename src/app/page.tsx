@@ -1,10 +1,14 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { Weather } from '@/components/weather';
 import { StockChart } from '@/components/stockChart';
+import { SearchResults } from '@/components/searchResults';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { Suspense } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { Loader2, CircleCheck } from 'lucide-react';
 
 export default function Page() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
@@ -31,18 +35,26 @@ export default function Page() {
                   }`}
               >
                 <div className="mb-2 prose prose-sm dark:prose-invert max-w-none">
-                  {message.content}
+                  {message.role === 'user' ? (
+                    message.content
+                  ) : (
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+                  )}
                 </div>
 
                 <div>
                   {message.parts.map((part, index) => {
                     if (part.type === 'tool-invocation') {
                       const { toolInvocation } = part;
-                      const { toolName, state } = toolInvocation;
+                      const { toolName, state, args } = toolInvocation;
 
                       const renderToolCallIndicator = (toolDisplayName: string, isLoading: boolean) => (
                         <div key={`${index}-indicator`} className="flex items-center space-x-2 mt-2 text-xs text-gray-600 dark:text-gray-400 p-2 rounded bg-gray-100 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600/50">
-                          <span className="text-sm">⚙️</span>
+                          {isLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+                          ) : (
+                            <CircleCheck className="h-4 w-4 text-green-500" />
+                          )}
                           <span>
                             {isLoading
                               ? `Calling ${toolDisplayName}...`
@@ -88,6 +100,51 @@ export default function Page() {
                       // MCP weather tool
                       if (toolName === 'get_weather') {
                         toolDisplayName = `mcp weather tool`;
+                      }
+
+                      // mcp-search-server
+                      if (toolName === 'search_web') {
+                        const query = args?.query || 'search';
+                        toolDisplayName = `MCP Web Search Tool for \"${query}\"`;
+                        if (state === 'result') {
+                          const toolResult = toolInvocation.result;
+
+                          // Access the 'content' array within the result object
+                          const rawResultsArray = toolResult?.content;
+                          let searchResults = [];
+
+                          // Check if it's an array and parse each item's text property
+                          if (Array.isArray(rawResultsArray)) {
+                            searchResults = rawResultsArray.reduce((acc, item) => {
+                              if (item.type === 'text' && typeof item.text === 'string') {
+                                try {
+                                  const parsedItem = JSON.parse(item.text);
+                                  // Ensure parsed item has expected properties
+                                  if (parsedItem && typeof parsedItem === 'object') {
+                                    acc.push({
+                                      title: parsedItem.title,
+                                      url: parsedItem.url,
+                                      content: parsedItem.content
+                                    });
+                                  }
+                                } catch (e) {
+                                  console.error("Failed to parse search result item:", item.text, e);
+                                }
+                              }
+                              return acc;
+                            }, []);
+                          } else {
+                            console.warn("Search result content is not an array:", rawResultsArray);
+                          }
+
+                          console.log("Parsed search results:", searchResults);
+
+                          resultComponent = (
+                            <div key={`${index}-result`}>
+                              <SearchResults results={searchResults} />
+                            </div>
+                          );
+                        }
                       }
 
                       return (

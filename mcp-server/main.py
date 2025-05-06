@@ -5,7 +5,7 @@ import os
 from typing import AsyncIterator
 
 from mcp.server.fastmcp import FastMCP
-from tools.weather import get_weather
+from tools.search import search_web
 
 @asynccontextmanager
 async def lifespan(server: FastMCP) -> AsyncIterator[None]:
@@ -17,13 +17,13 @@ async def lifespan(server: FastMCP) -> AsyncIterator[None]:
         print("Shutting down MCP server")
         await server.shutdown()
 
-mcp = FastMCP("weather",
-              description="Get the weather in a city",
+mcp = FastMCP("mcp-search-server",
+              description="Performs web searches using Tavily",
               host="0.0.0.0",
               port=8051,
               lifespan=lifespan)
 
-mcp.tool()(get_weather)
+mcp.tool()(search_web)
 
 async def main():
     """Main function"""
