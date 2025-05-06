@@ -2,7 +2,7 @@ import { tool as createTool } from 'ai';
 import { z } from 'zod';
 
 export const weatherTool = createTool({
-  description: 'Display the weather for a San Francisco',
+  description: 'Display the weather for San Francisco',
   parameters: z.object({
     location: z.string().describe('The location to get the weather for'),
   }),
@@ -36,7 +36,8 @@ export const stockPriceTool = createTool({
   },
 });
 
-export const tools = {
-  displayWeather: weatherTool,
+// Export only the locally defined tools
+export const localTools = {
+  displayWeatherSF: weatherTool,
   displayStockPrice: stockPriceTool,
 };

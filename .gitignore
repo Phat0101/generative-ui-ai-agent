@@ -45,3 +45,10 @@ package-lock.json
 
 # scripts
 yt-script.md
+
+#python mcp-server 
+mcp-server/venv/
+mcp-server/__pycache__/
+
+# vscode settings
+.vscode/
