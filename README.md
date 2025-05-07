@@ -33,10 +33,10 @@ The frontend UI then iterates through the `message.parts` array provided by the 
 *   `uv` (Python package installer/virtual environment manager): `pip install uv` or follow [official uv installation](https://github.com/astral-sh/uv#installation)
 
 ### 2. Clone the repository:
-```bash
-git clone <your-repo-url>
-cd <repo-directory>
-```
+    ```bash
+    git clone https://github.com/Phat0101/generative-ui-ai-agent.git
+    cd generative-ui-ai-agent
+    ```
 
 ### 3. Set up the Next.js Frontend:
 

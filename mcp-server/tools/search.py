@@ -21,7 +21,7 @@ async def search_web(query: str) -> list[dict]:
 
     try:
         tavily_client = AsyncTavilyClient(api_key=api_key)
-        response = await tavily_client.search(query=query, search_depth="advanced") 
+        response = await tavily_client.search(query=query, search_depth="advanced", max_results=10)
         
         # Extract relevant parts of the results 
         results = [
