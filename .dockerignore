@@ -1,0 +1,31 @@
+# Git files
+.git
+.gitignore
+
+# Node modules
+node_modules
+
+# Next.js build output and cache
+.next
+
+# Docker files specific to sub-services
+Dockerfile
+docker-compose.yml
+
+# MCP Server directories (should be built in their own context)
+deno-mcp-server
+python-mcp-server
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor configuration
+.vscode 
