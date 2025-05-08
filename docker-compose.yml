@@ -1,0 +1,41 @@
+services:
+  python_mcp_server:
+    build:
+      context: ./python-mcp-server
+      dockerfile: Dockerfile
+    ports:
+      - "8051:8051"
+    env_file:
+      - ./.env
+    networks:
+      - mcp_network
+    restart: unless-stopped
+
+  deno_mcp_server:
+    build:
+      context: ./deno-mcp-server
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    networks:
+      - mcp_network
+    restart: unless-stopped
+
+  next_app:
+    build:
+      context: .
+      dockerfile: Dockerfile # This refers to the Dockerfile in the root directory
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - python_mcp_server
+      - deno_mcp_server
+    networks:
+      - mcp_network
+    restart: unless-stopped
+
+networks:
+  mcp_network:
+    driver: bridge 

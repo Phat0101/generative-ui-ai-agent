@@ -10,4 +10,5 @@ dependencies = [
     "httpx>=0.28.1",
     "mcp[cli]>=1.7.1",
     "pylint>=3.3.7",
+    "tavily-python",
 ]

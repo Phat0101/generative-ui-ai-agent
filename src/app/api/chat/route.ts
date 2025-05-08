@@ -6,17 +6,26 @@ import { localTools } from './tools';
 export async function POST(request: Request) {
   const { messages } = await request.json();
   try {
-    const mcpClient = await createMCPClient({
+    const pythonMcpClient = await createMCPClient({
       transport: {
         type: 'sse',
-        url: process.env.MCP_SERVER_URL || 'http://localhost:8051/sse',
+        url: process.env.PYTHON_MCP_SERVER_URL || 'http://localhost:8051/sse',
       },
     });
-    const mcpTools = await mcpClient.tools();
+    const pythonMcpTools = await pythonMcpClient.tools();
+
+    const denoMcpClient = await createMCPClient({
+      transport: {
+        type: 'sse',
+        url: process.env.DENO_MCP_SERVER_URL || 'http://localhost:3001/sse',
+      },
+    });
+    const denoMcpTools = await denoMcpClient.tools();
 
     const allTools = {
       ...localTools,
-      ...mcpTools,
+      ...pythonMcpTools,
+      ...denoMcpTools,
     };
 
     const result = await streamText({
@@ -40,7 +49,8 @@ export async function POST(request: Request) {
       tools: allTools,
       toolChoice: 'auto',
       onFinish: async () => {
-        await mcpClient.close();
+        await pythonMcpClient.close();
+        await denoMcpClient.close();
       }
     });
     return result.toDataStreamResponse({
